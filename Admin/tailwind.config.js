@@ -1,8 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+    },
   },
   plugins: [],
 };

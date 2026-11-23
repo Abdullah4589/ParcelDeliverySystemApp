@@ -1,89 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome SendIT</title>
-    <style type="text/css">
-        body{
-            margin:0;
-            padding: 0;
-            min-width:100%;
-            font-family: Arial,sans-serif;
-            font-size:16px;
-            line-height: 1.5;
-            background-color: #FAFAFA;
-            color:#222222;
-        }
-        a{
-            color:#000;
-            text-decoration: none;
-        }
-
-        h1{
-            font-size:24px;
-            font-weight:700;
-            line-height:1.25;
-            margin-top:0;
-            margin-bottom:15px;
-            text-align:center;
-        }
-
-        p{
-            margin-top: 0;
-            margin-bottom: 24px;
-            text-decoration: none;
-        }
-        table td{
-            vertical-align: top;
-        }
-        .email-wrapper{
-            max-width:700px;
-            margin: 0 auto;
-        }
-        .email-header{
-            background-color: #1E1E1E;
-            padding: 30px;
-            color: #fff;
-        }
-
-        .email-body{
-            padding:14px;
-            background-color: #E9EB77;
-         
-        }
-        .email-footer{
-            background-color: #E9EB77;        
-            padding: 14px;
-        }
-
-        img{
-            background-color: #1E1E1E;
-            padding: 24px; 
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to SendIT</title>
 </head>
-<body>
-
-    <div class="email-wrapper">
-
-        <div class="email-header">
-            <h1>Welcome to SendIT</h1>
-        </div>         
-        <div class="email-body">  
-        <p>Hello <%= fullname %>,</p>
-        <p>Your login credentials:</p>
-        <p>Email: <%= email %></p>
-        <p>Password: <%= password %></p> 
-        <p>To login go to: <a href="http://localhost:5173/login">https://www.sendit.com/login</a></p>
-        <img src="https://res.cloudinary.com/dap91fhxh/image/upload/v1717495157/hero_r5lgvq.png" alt="" height="250px" width="500px">
-        <h3>Note:</h3>
-        <p>Please Keep this credentials privately. Don't share with Anyone</p>
-        <p>If you did not register for a SendIT account, Please ignore this email</p>
-        </div>
-        <div class="email-footer">
-            <p>If you have any questions, please don't hesitate to contact us at <a href="mailto:alokmondala199@gmail.com">sendit@outlook.com</a></a></p>
-        </div>
-    </div>    
+<body style="margin:0;padding:24px;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e2e8f0;">
+  <div style="max-width:620px;margin:0 auto;background:#1e293b;border-radius:16px;overflow:hidden;border:1px solid #334155;">
+    <div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:32px;border-bottom:3px solid #f59e0b;text-align:center;">
+      <div style="display:inline-block;background:#f59e0b;color:#0f172a;font-weight:800;padding:6px 14px;border-radius:8px;font-size:14px;letter-spacing:1px;">SENDIT LOGISTICS</div>
+      <h1 style="margin:16px 0 0;color:#ffffff;font-size:26px;">Welcome aboard, <%= fullname %>!</h1>
+    </div>
+    <div style="padding:32px;">
+      <p style="margin:0 0 16px;color:#cbd5e1;line-height:1.6;">Your SendIT account is ready. You can now book shipments, track parcels in real time, manage saved addresses, and download statements.</p>
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:20px;margin:24px 0;">
+        <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.8px;">Account Credentials</p>
+        <p style="margin:6px 0;color:#f8fafc;"><strong>Email:</strong> <%= email %></p>
+        <p style="margin:6px 0;color:#f8fafc;"><strong>Password:</strong> <code style="background:#1e293b;padding:2px 8px;border-radius:4px;color:#fbbf24;"><%= password %></code></p>
+      </div>
+      <div style="text-align:center;margin:28px 0;">
+        <a href="<%= loginUrl %>" style="display:inline-block;background:#f59e0b;color:#0f172a;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:10px;">Sign In to Dashboard</a>
+      </div>
+      <p style="font-size:13px;color:#94a3b8;margin:0;">For security, keep your credentials private and consider updating your password after signing in.</p>
+    </div>
+    <div style="background:#0f172a;padding:18px 32px;text-align:center;font-size:12px;color:#64748b;">
+      SendIT Logistics &bull; Need help? Contact <a href="mailto:support@sendit.io" style="color:#fbbf24;text-decoration:none;">support@sendit.io</a>
+    </div>
+  </div>
 </body>
 </html>

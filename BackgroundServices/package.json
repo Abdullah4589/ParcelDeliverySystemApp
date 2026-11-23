@@ -1,13 +1,14 @@
 {
   "name": "backgroundservices",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "SendIT Automated Email & Notification Worker",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "node --watch index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["email", "cron", "nodemailer", "sendit"],
+  "author": "SendIT",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

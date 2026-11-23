@@ -1,71 +1,68 @@
+const path = require("path");
 const ejs = require("ejs");
 const dotenv = require("dotenv");
 const sendMail = require("../helpers/sendMail");
 const Parcel = require("../models/Parcel");
+
 dotenv.config();
+
+const TEMPLATE_PATH = path.join(__dirname, "../templates/deliveredparcel.ejs");
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const SendParcelDeliveredEmail = async () => {
   const parcels = await Parcel.find({ status: 2 });
+  if (parcels.length === 0) return;
 
-  if (parcels.length > 0) {
-    for (let parcel of parcels) {
-      ejs.renderFile(
-        "templates/deliveredparcel.ejs",
-        {
-          sendername: parcel.sendername,
-          from: parcel.from,
-          to: parcel.to,
-          recipientname: parcel.recipientname,
-          cost: parcel.cost,
-          weight: parcel.weight,
-          note: parcel.note,
-        },
-        async (err, data) => {
-          let messageoption = {
-            from: process.env.EMAIL,
-            to: parcel.senderemail,
-            subject: "Your parcel has been delivered",
-            html: data,
-          };
+  for (const parcel of parcels) {
+    try {
+      const trackingCode = parcel.trackingNumber || String(parcel._id);
+      const trackUrl = `${FRONTEND_URL}/track/${trackingCode}`;
 
-          try {
-            sendMail(messageoption);
-           
-          } catch (error) {
-            console.log(err);
-          }
-        }
-      );
+      const senderHtml = await ejs.renderFile(TEMPLATE_PATH, {
+        greetingName: parcel.sendername,
+        trackingNumber: trackingCode,
+        trackUrl,
+        sendername: parcel.sendername,
+        recipientname: parcel.recipientname,
+        from: parcel.from,
+        to: parcel.to,
+        cost: parcel.cost,
+        weight: parcel.weight,
+        note: parcel.note || "None",
+      });
 
-      ejs.renderFile(
-        "templates/deliveredparcel.ejs",
-        {
-          sendername: parcel.sendername,
-          from: parcel.from,
-          to: parcel.to,
-          recipientname: parcel.recipientname,
-          cost: parcel.cost,
-          weight: parcel.weight,
-          note: parcel.note,
-        },
-        async (err, data) => {
-          let messageoption = {
-            from: process.env.EMAIL,
-            to: parcel.recipientemail,
-            subject: "Your parcel has been delivered",
-            html: data,
-          };
+      await sendMail({
+        from: process.env.EMAIL || "no-reply@sendit.io",
+        to: parcel.senderemail,
+        subject: `Parcel Delivered — ${trackingCode}`,
+        html: senderHtml,
+      });
 
-          try {
-            sendMail(messageoption);
-            await Parcel.findByIdAndUpdate(parcel._id, { $set: { status: 3} });
-          } catch (error) {
-            console.log(err);
-          }
-        }
-      );
+      const recipientHtml = await ejs.renderFile(TEMPLATE_PATH, {
+        greetingName: parcel.recipientname,
+        trackingNumber: trackingCode,
+        trackUrl,
+        sendername: parcel.sendername,
+        recipientname: parcel.recipientname,
+        from: parcel.from,
+        to: parcel.to,
+        cost: parcel.cost,
+        weight: parcel.weight,
+        note: parcel.note || "None",
+      });
+
+      await sendMail({
+        from: process.env.EMAIL || "no-reply@sendit.io",
+        to: parcel.recipientemail,
+        subject: `Your SendIT Parcel Has Arrived — ${trackingCode}`,
+        html: recipientHtml,
+      });
+
+      await Parcel.findByIdAndUpdate(parcel._id, { $set: { status: 3 } });
+    } catch (error) {
+      console.error(`Delivered email failed for parcel ${parcel._id}:`, error.message);
     }
   }
 };
 
-module.exports = {SendParcelDeliveredEmail };
+module.exports = { SendParcelDeliveredEmail };

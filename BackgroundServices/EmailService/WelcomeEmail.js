@@ -1,38 +1,42 @@
+const path = require("path");
 const ejs = require("ejs");
 const dotenv = require("dotenv");
+const CryptoJs = require("crypto-js");
 const sendMail = require("../helpers/sendMail");
 const User = require("../models/User");
-const CryptoJs = require("crypto-js");
 
 dotenv.config();
 
-const sendWelcomeEmail = async (fullname, password, email) => {
+const TEMPLATE_PATH = path.join(__dirname, "../templates/welcome.ejs");
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+const sendWelcomeEmail = async () => {
   const users = await User.find({ status: 0 });
- 
+  if (users.length === 0) return;
 
-  if (users.length > 0) {
-    for (let user of users) {
-      const hashedPassword = CryptoJs.AES.decrypt(user.password, process.env.PASS);
-      const originalPassword = hashedPassword.toString(CryptoJs.enc.Utf8);
-      ejs.renderFile(
-        "templates/welcome.ejs",
-        { fullname: user.fullname,password:originalPassword, email: user.email },
-        async (err, data) => {
-          let messageoption = {
-            from: process.env.EMAIL,
-            to: user.email,
-            subject: "Welcome to SendIT",
-            html: data,
-          };
+  for (const user of users) {
+    try {
+      const secret = process.env.PASS || "sendit_default_pass_secret";
+      const decrypted = CryptoJs.AES.decrypt(user.password, secret);
+      const originalPassword = decrypted.toString(CryptoJs.enc.Utf8);
 
-          try {
-            sendMail(messageoption);
-            await User.findByIdAndUpdate(user._id, { $set: { status: 1 } });
-          } catch (error) {
-            console.log(err);
-          }
-        }
-      );
+      const html = await ejs.renderFile(TEMPLATE_PATH, {
+        fullname: user.fullname,
+        email: user.email,
+        password: originalPassword || "(Set during signup)",
+        loginUrl: `${FRONTEND_URL}/login`,
+      });
+
+      await sendMail({
+        from: process.env.EMAIL || "no-reply@sendit.io",
+        to: user.email,
+        subject: "Welcome to SendIT Logistics",
+        html,
+      });
+
+      await User.findByIdAndUpdate(user._id, { $set: { status: 1 } });
+    } catch (error) {
+      console.error(`Welcome email failed for user ${user._id}:`, error.message);
     }
   }
 };

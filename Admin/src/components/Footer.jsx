@@ -1,18 +1,9 @@
 const Footer = () => {
   return (
-    <div className="flex items-center bg-[#E9EB77] justify-between h-[100px]">
-      <img
-        src="/logo.png"
-        alt=""
-        height={150}
-        width={150}
-        className="text-white"
-      />
-      <ul className="m-[20px]">
-        <li>Admin</li>
-        <li>&copy; 2024</li>
-      </ul>
-    </div>
+    <footer className="border-t border-slate-200 dark:border-slate-800/80 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 no-print">
+      <span>SendIT Logistics Operations Center</span>
+      <span>&copy; {new Date().getFullYear()} SendIT • Admin Portal v2.0</span>
+    </footer>
   );
 };
 
